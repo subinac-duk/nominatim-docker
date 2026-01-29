@@ -1,8 +1,7 @@
-# Ignore OSM / PBF data files
-data/
+# Ignore everything inside these folders
+data/*
+postgres/*
 
-# Ignore PostgreSQL database files
-postgres/
-
-# Keep the folders themselves (optional, recommended)
-!.gitignore
+# But keep these placeholder files
+!data/.keep
+!postgres/.keep
