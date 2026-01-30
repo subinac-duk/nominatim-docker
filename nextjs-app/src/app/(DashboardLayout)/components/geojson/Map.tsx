@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { MapContainer, TileLayer, Marker, Tooltip } from './LeafletMap';
 import GeoJsonLayer from './GeoJsonLayer';
 
@@ -7,51 +8,57 @@ import states from '@/data/states.json';
 import districts from '@/data/districts.json';
 import villages from '@/data/villages.json';
 
+import MapClickHandler from './MapClickHandler';
 
 import { findContainingFeature } from '@/lib/geo/pointInPolygon';
 import {
   getVillageName,
-  getTalukName,
   getDistrictName,
   getStateName,
 } from '@/lib/geo/getLocationNames';
 
 export default function LocationMap({ lat, lon }: any) {
-  // 🔽 smallest → largest
-  const village = findContainingFeature(lat, lon, villages);
-  const district = findContainingFeature(lat, lon, districts);
-  const state = findContainingFeature(lat, lon, states);
+  // 🔽 NEW: local state (initially GPS location)
+  const [point, setPoint] = useState({ lat, lon });
 
-console.log({
-  village: village?.properties,
-  district: district?.properties,
-  state: state?.properties,
-});
+  // 🔽 use selected point instead of props
+  const village = findContainingFeature(point.lat, point.lon, villages);
+  const district = findContainingFeature(point.lat, point.lon, districts);
+  const state = findContainingFeature(point.lat, point.lon, states);
+
+  console.log({
+    village: village?.properties,
+    district: district?.properties,
+    state: state?.properties,
+  });
 
   const labelParts = [
-  getVillageName(village?.properties),
-  getDistrictName(district?.properties),
-  getStateName(state?.properties),
-];
+    getVillageName(village?.properties),
+    getDistrictName(district?.properties),
+    getStateName(state?.properties),
+  ];
 
-const label = labelParts.filter(Boolean).join(', ');
+  const label = labelParts.filter(Boolean).join(', ');
 
   return (
     <MapContainer
-      center={[lat, lon]}
+      center={[point.lat, point.lon]}
       zoom={14}
       style={{ height: 400, width: '100%' }}
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-      <Marker position={[lat, lon]}>
+      <MapClickHandler onSelect={setPoint} />
+
+      {/* 📍 marker follows clicked location */}
+      <Marker position={[point.lat, point.lon]}>
         <Tooltip permanent direction="top" offset={[0, -10]}>
-          📍 {label || 'Your location'}
+          📍 {label || 'Selected location'}
         </Tooltip>
       </Marker>
 
-      {/* Highlight only the most specific boundary */}
-      <GeoJsonLayer feature={village || taluk || district} />
+      {/* Highlight most specific boundary */}
+      <GeoJsonLayer feature={village || district || state} />
     </MapContainer>
   );
 }
