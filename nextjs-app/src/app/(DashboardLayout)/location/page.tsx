@@ -1,34 +1,37 @@
-"use client";
+'use client';
 
-import { Button, TextField, Box } from "@mui/material";
-import { useState } from "react";
-import LocationPickerDialog from "@/app/(DashboardLayout)/components/LocationPickerDialog";
+import { useState } from 'react';
+import LocationModal from '@/app/(DashboardLayout)/components/geojson/LocationModal';
 
-export default function LocationPage() {
+export default function Page() {
+  const [coords, setCoords] = useState<any>(null);
   const [open, setOpen] = useState(false);
-  const [address, setAddress] = useState("");
-  const [coords, setCoords] = useState<{ lat: number; lon: number } | null>(null);
+
+  const getLocation = () => {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setCoords({
+          lat: pos.coords.latitude,
+          lon: pos.coords.longitude,
+        });
+        setOpen(true);
+      },
+      (err) => alert(err.message),
+      { enableHighAccuracy: true }
+    );
+  };
 
   return (
-    <Box p={3}>
-   
+    <>
+      <button onClick={getLocation}>Show my location</button>
 
-      <Button
-        variant="contained"
-        sx={{ mt: 2 }}
-        onClick={() => setOpen(true)}
-      >
-        Get Location
-      </Button>
-
-      <LocationPickerDialog
-        open={open}
-        onClose={() => setOpen(false)}
-        onConfirm={(data) => {
-          setAddress(data.address);
-          setCoords({ lat: data.lat, lon: data.lon });
-        }}
-      />
-    </Box>
+      {coords && (
+        <LocationModal
+          open={open}
+          onClose={() => setOpen(false)}
+          coords={coords}
+        />
+      )}
+    </>
   );
 }

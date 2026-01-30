@@ -17,6 +17,7 @@
     "@mui/lab": "^7.0.1-beta.19",
     "@mui/material": "^7.3.5",
     "@tabler/icons-react": "^3.35.0",
+    "@turf/turf": "^7.3.3",
     "@types/node": "^24.10.1",
     "apexcharts": "5.3.6",
     "eslint": "9.39.1",

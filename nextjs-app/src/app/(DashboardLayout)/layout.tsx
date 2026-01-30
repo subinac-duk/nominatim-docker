@@ -3,6 +3,7 @@ import { styled, Container, Box } from "@mui/material";
 import React, { useState, Activity } from "react";
 import Header from "@/app/(DashboardLayout)/layout/header/Header";
 import Sidebar from "@/app/(DashboardLayout)/layout/sidebar/Sidebar";
+import 'leaflet/dist/leaflet.css';
 
 const MainWrapper = styled("div")(() => ({
   display: "flex",
