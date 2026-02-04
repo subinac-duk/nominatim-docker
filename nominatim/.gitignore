@@ -1,0 +1,7 @@
+# Ignore everything inside these folders
+data/*
+postgres/*
+
+# But keep these placeholder files
+!data/.keep
+!postgres/.keep

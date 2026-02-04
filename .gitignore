@@ -1,0 +1,17 @@
+# Node / Next.js
+node_modules/
+.next/
+npm-debug.log*
+yarn-error.log*
+
+# Docker
+*.log
+docker-compose.override.yml
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Env files
+.env
+.env.local
